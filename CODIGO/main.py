@@ -25,6 +25,7 @@ import cfg as cfg
 from organizacion_data import *
 from crocker_plot_betti import *
 from procesado import *
+
 #------------------------------------------------------------------------------
 
 
@@ -82,26 +83,11 @@ for etiqueta, data_archivos in data_archivos_total_delimitado.groupby(cfg.LABEL_
     )
 
 
-
-#------------------------------------------------------------------------------
-
-
-
-
-#-------------------Calculando Homologia --------------------------------------
-
-# homology = calcular_homologia_bloque(data_experimento) #Hasta aca esta todo okok
-
-# #-------------------Calculando CURVAS DE BETTI--------------------------------------
-# griddata = turnIntervalsIntoGrid(homology)
-
-# betti_0, betti_1, betti_euler, betti = crear_matrices_betti(griddata)
-
 # #GEnermos graficas de las curvas de betti
 # matrizBetti(griddata,0,maxYlim = cfg.MYMAXSCALE)
 # matrizBetti(griddata,1,maxYlim = cfg.MYMAXSCALE)
 
-# #GEneramos las graficas de los crocker plot 
+# #Generamos las graficas de los crocker plot 
 # crockerplot_grafic(griddata,0,maxYlim = cfg.MYMAXSCALE)  
 # crockerplot_grafic(griddata,1,maxYlim = cfg.MYMAXSCALE)
 

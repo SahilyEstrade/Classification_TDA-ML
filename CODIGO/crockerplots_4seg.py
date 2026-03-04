@@ -15,17 +15,21 @@ from sklearn.utils import shuffle
 from sklearn.decomposition import PCA
 
 
+from sklearn.cluster import KMeans
+from sklearn.metrics import accuracy_score
+from scipy.stats import mode
+
+
 #FUNCIÓN: lee los .csv y los agrupa por ID (cada evacuación) y crea entonces una lista de lista de las matrices
 def descargar_matrices_por_id(ruta_carpeta):
-    id_dict = {}  # Diccionario para agrupar por ID
+    id_dict = {}
 
     for archivo in os.listdir(ruta_carpeta):
-        if archivo.endswith('.csv'):   #coger solo los b0
-            partes = archivo.split('_') 
-            if len(partes) < 2:
-                continue  # Saltar si no tiene el formato esperado
 
-            id_str = partes[1]  # El ID es el segundo bloque: mb0_000101_2.csv
+        if archivo.endswith('.csv'):   # coger solo los csv
+            partes = archivo.split('_') 
+
+            id_str = partes[3]
 
             if id_str not in id_dict:
                 id_dict[id_str] = []
@@ -34,7 +38,6 @@ def descargar_matrices_por_id(ruta_carpeta):
             df = pd.read_csv(ruta_archivo, skiprows=1, header=None)
             id_dict[id_str].append(df.values)
 
-    # Convertir a lista de listas ordenadas por ID
     ids_ordenados = sorted(id_dict.keys())
     lista_de_listas = [id_dict[k] for k in ids_ordenados]
 
@@ -45,8 +48,10 @@ def descargar_matrices_por_id(ruta_carpeta):
 #------------------------------------------------------------------------------
 #empujando = 0
 #sin empujar = 1
-ruta_0 = './b0_empujando_100'
-ruta_1 = './b0_sin_empujar_100'
+ruta_0 = '/Users/sahy/Documents/Peatones/Clasificador_ModelosSupervisadosyNoSupervisados/RESULTADOS_RUIDO/empujando/betti_1'
+ruta_1 =  '/Users/sahy/Documents/Peatones/Clasificador_ModelosSupervisadosyNoSupervisados/RESULTADOS_RUIDO/sinempujar/betti_1'
+
+
 
 lista_0 = descargar_matrices_por_id(ruta_0)
 lista_1 = descargar_matrices_por_id(ruta_1)
@@ -152,73 +157,78 @@ X_test_norm = scaler.transform(X_test)         # Transforma test con el mismo sc
 #------------------------------------------------------------------------------
 # MODELOS NO SUPERVISADOS
 #------------------------------------------------------------------------------
-
-# PCA
+#------------------------------------------------------------------------------
+# PCA SOLO PARA VISUALIZACIÓN
 #------------------------------------------------------------------------------
 
-pca = PCA(n_components=2)
-pca.fit(X_train_norm)
+pca_vis = PCA(n_components=2, random_state=42)
+X_train_pca_vis = pca_vis.fit_transform(X_train_norm)
+X_test_pca_vis  = pca_vis.transform(X_test_norm)
 
-X_train_pca = pca.transform(X_train_norm)
-X_test_pca = pca.transform(X_test_norm)
-
-#Grafico
 plt.figure(figsize=(8,6))
 
-# Train clase 0
 plt.scatter(
-    X_train_pca[y_train == 0, 0], 
-    X_train_pca[y_train == 0, 1], 
-    label='Train Clase 0', alpha=0.7, edgecolors='b', s=10
+    X_train_pca_vis[y_train == 0, 0],
+    X_train_pca_vis[y_train == 0, 1],
+    label='Train Clase 0', alpha=0.7, s=10
 )
 
-# Train clase 1
 plt.scatter(
-    X_train_pca[y_train == 1, 0], 
-    X_train_pca[y_train == 1, 1], 
-    label='Train Clase 1', alpha=0.7, edgecolors='r', s=10
+    X_train_pca_vis[y_train == 1, 0],
+    X_train_pca_vis[y_train == 1, 1],
+    label='Train Clase 1', alpha=0.7, s=10
 )
 
 plt.xlabel('Componente principal 1')
 plt.ylabel('Componente principal 2')
-plt.title('Proyección PCA de los datos de entrenamiento y test')
+plt.title('Proyección PCA (solo visualización)')
 plt.legend()
 plt.grid(True)
 plt.show()
 
-#print(pca.components_)
-print("Varianza explicada por cada componente:")
-print(pca.explained_variance_ratio_)
+print("Varianza explicada (visualización):")
+print(pca_vis.explained_variance_ratio_)
+
+#------------------------------------------------------------------------------
+# PCA PARA MODELOS (conserva el 95% de varianza)
+#------------------------------------------------------------------------------
+
+pca_model = PCA(n_components=0.95, random_state=42)
+
+X_train_pca = pca_model.fit_transform(X_train_norm)
+X_test_pca  = pca_model.transform(X_test_norm)
+
+print("Dimensión original:", X_train_norm.shape[1])
+print("Dimensión tras PCA:", X_train_pca.shape[1])
 
 
+#------------------------------------------------------------------------------
 # K-MEANS
 #------------------------------------------------------------------------------
 
-from sklearn.cluster import KMeans
-from sklearn.metrics import accuracy_score
-from scipy.stats import mode
-
-# Elegimos 2 clusters porque tenemos 2 clases
-kmeans = KMeans(n_clusters=2, random_state=42)
+kmeans = KMeans(n_clusters=2, random_state=42, n_init=20)
 kmeans.fit(X_train_norm)
 
-# Predicciones (etiquetas de cluster)
-y_pred_cluster = kmeans.predict(X_test_norm)
+# clusters en train y test
+y_train_cluster = kmeans.predict(X_train_norm)
+y_test_cluster  = kmeans.predict(X_test_norm)
 
-# Como KMeans asigna etiquetas arbitrarias (0 o 1 sin relación con tus clases reales),
-# necesitamos hacer una asignación "inteligente":
-def ajustar_etiquetas(pred, true):
-    labels = np.zeros_like(pred)
-    for i in np.unique(pred):
-        mask = pred == i
-        labels[mask] = mode(true[mask])[0]
-    return labels
+# mapeo usando SOLO train
+def obtener_mapeo(clusters, etiquetas):
+    mapeo = {}
+    for c in np.unique(clusters):
+        mask = clusters == c
+        mapeo[c] = mode(etiquetas[mask], keepdims=True).mode[0]
+    return mapeo
 
-y_pred_ajustado = ajustar_etiquetas(y_pred_cluster, y_test)
+mapeo = obtener_mapeo(y_train_cluster, y_train)
 
-# Medimos la precisión
+# aplicar mapeo al test
+y_pred_ajustado = np.array([mapeo[c] for c in y_test_cluster])
+
 accuracy_kmeans = accuracy_score(y_test, y_pred_ajustado)
 print(f"Accuracy K-Means: {accuracy_kmeans * 100:.2f}%")
+#------------------------------------------------------------------------------
 
 
 #------------------------------------------------------------------------------
@@ -231,7 +241,8 @@ print(f"Accuracy K-Means: {accuracy_kmeans * 100:.2f}%")
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 
-model1 = LogisticRegression(random_state=42) 
+
+model1 = LogisticRegression(random_state=42, max_iter=1000)
 
 model1.fit(X_train_norm, y_train)
 

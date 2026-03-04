@@ -132,25 +132,6 @@ def crockerplot_grafic(bettiData, dim, maxYlim):
     plt.show()
     
     
-#Gruardar matrices
-def guardar_matrices(betti_0, betti_1, betti, betti_euler,
-                     base_path, ev, i):
-
-    rutas = {
-        "b0": os.path.join(base_path, "b0"),
-        "b1": os.path.join(base_path, "b1"),
-        "b": os.path.join(base_path, "b"),
-        "euler": os.path.join(base_path, "euler")
-    }
-
-    for r in rutas.values():
-        os.makedirs(r, exist_ok=True)
-
-    betti_0.to_csv(f"{rutas['b0']}/mb0_{ev}_{i}.csv", index=False)
-    betti_1.to_csv(f"{rutas['b1']}/mb1_{ev}_{i}.csv", index=False)
-    betti.to_csv(f"{rutas['b']}/mb_{ev}_{i}.csv", index=False)
-    betti_euler.to_csv(f"{rutas['euler']}/mbe_{ev}_{i}.csv", index=False)
-
 
 
 # =============================================================================

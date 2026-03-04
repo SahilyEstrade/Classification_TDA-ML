@@ -13,7 +13,7 @@ FOLDER_DATA_NAME = "DATA"
 #Nombre de la carpeta donde vamos a guardar los resultados
 FOLDER_RESULTADOS_NAME = "RESULTADOS" 
 
-
+FOLDER_RESULTADOS_NAME_RUIDO = "RESULTADOS_RUIDO"
 #------------------------------------------------------------------------------
 #------------NOMBRE DE LAS COLUMNAS PARA CREAR EL DATA FRAME INICIAL-----------
 FRAME_COL = "frames"
@@ -62,7 +62,7 @@ L = 2.5 #Longitud de los intervalos temporales
 #curve_type : betti |entropy | euler
 CURVA_DE_PERSISTENCIA ='betti'
 
-DIMENSION = 0
+DIMENSION = 1
 
 
 

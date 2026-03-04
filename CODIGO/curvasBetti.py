@@ -31,8 +31,8 @@ def descargar_matrices(ruta_carpeta):
 #------------------------------------------------------------------------------
 #empujando = 0
 #sin empujar = 1
-ruta_0 = './be_empujando_frame'
-ruta_1 = './be_sin_empujar_frame'
+ruta_0 = '/Users/sahy/Documents/Peatones/Clasificador_ModelosSupervisadosyNoSupervisados/RESULTADOS_RUIDO/empujando/betti_0'
+ruta_1 =  '/Users/sahy/Documents/Peatones/Clasificador_ModelosSupervisadosyNoSupervisados/RESULTADOS_RUIDO/sinempujar/betti_0'
 
 lista_0 = descargar_matrices(ruta_0)
 lista_1 = descargar_matrices(ruta_1)

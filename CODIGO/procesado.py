@@ -131,7 +131,7 @@ def procesar_evacuaciones_genial(
             # -----------------------------
             
             # Nombre del archivo
-            nombre_archivo = f"{curve_type}_{dim}_{ev}_{n_t}_{i}.csv"
+            nombre_archivo = f"{curve_type}_{dim}_{ev}_{n_t}_{i:04d}.csv"
             
             # Carpeta de salida
             folder_name = ruta_salida / f"{curve_type}_{dim}"
