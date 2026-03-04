@@ -29,39 +29,65 @@ from procesado import *
 # FUNCIONES
 # =============================================================================
 
-def add_fixed_distance_noise(pos,error = 0.02, seed=None):
+def add_fixed_distance_noise(pos,error = None, seed=None):
     """
     Añade desplazamiento aleatorio de magnitud fija a cada posición y dibuja el resultado.
     
     pos: array (N,2) con posiciones [x,y]
-    distance: distancia fija a desplazar cada punto
+    error: porcentaje relativo (ej. 0.02 = 2%)
     seed: semilla opcional para reproducibilidad
     
     Retorna: pos_ruido, array de posiciones desplazadas
     """
     if seed is not None:
         np.random.seed(seed)
-    
+    if error is None:
+        error = cfg.ERROR_ADD_RUIDO
+ 
     N = pos.shape[0]
+    
+    r_original = np.sqrt(pos['x']**2 + y**2)
 
     # Dirección aleatoria uniforme
     theta = np.random.uniform(0.0, 2*np.pi, size=N)
     
     
-    # Generar r con distribución uniforme y aplicar error
-    r = np.random.uniform(0, 0.2, size=N)
-    error = r * error * np.random.uniform(-1, 1, size=N)
-    r_con_error = r + error
+    # Generar r con distribución uniforme
+    r_max = 0.2 * (1 + error)
+    r = np.random.uniform(0, r_max, size=N)
     
     
+
+
     
+
+    # Desplazamiento máximo por punto
+    delta_r_max = np.minimum(error_relativo * r_original, max_desplazamiento)
+
+    # Generar desplazamientos aleatorios uniformes en el círculo
+    theta = np.random.uniform(0, 2*np.pi, N)
+    u = np.random.uniform(0, 1, N)
+    r_error = delta_r_max * np.sqrt(u)
+    
+
+
+
+
+
+
+
+
+
+
+
     
     # Desplazamiento en coordenadas cartesianas
-    dx = r_con_error * np.cos(theta)
-    dy = r_con_error * np.sin(theta)
+    dx = r * np.cos(theta)
+    dy = r * np.sin(theta)
 
     pos_ruido = pos + np.column_stack((dx, dy))
-
+    
+    
     # # --- Dibujo ---
     # plt.figure(figsize=(6, 6))
     # plt.scatter(pos[:, 0], pos[:, 1], s=30, label="original")
@@ -87,6 +113,7 @@ def add_fixed_distance_noise(pos,error = 0.02, seed=None):
 
 
 
+
 # =============================================================================
 # RUTAS Y PARÁMETROS
 # =============================================================================
@@ -107,6 +134,7 @@ df_todos_experimentos = load(ruta_salida)
 #------------------------------------------------------------------------------
 #Nos quedamos con las columnas de las posiciones de los peatones 
 #Y a continuacion, calculamos el ruido y lo reemplazamos por las columnas originales
+
 
 pos = df_todos_experimentos[[cfg.X_COL, cfg.Y_COL]].to_numpy()
 
