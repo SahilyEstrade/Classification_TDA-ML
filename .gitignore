@@ -1,3 +1,48 @@
+
+# -----------------------------
+# Python
+# -----------------------------
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Entornos virtuales
+venv/
+env/
+.venv/
+ENV/
+
+# Archivos de configuración local
+.env
+
+# -----------------------------
+# Sistema operativo
+# -----------------------------
+.DS_Store
+Thumbs.db
+
+# -----------------------------
+# IDEs
+# -----------------------------
+.vscode/
+.idea/
+
+# -----------------------------
+# Resultados generados
+# -----------------------------
+RESULTADOS/
 RESULTADOS_RUIDO/
+outputs/
+logs/
+
+# -----------------------------
+# Datos grandes (opcional)
+# -----------------------------
+data/
+datasets/
+*.h5
+*.parquet
