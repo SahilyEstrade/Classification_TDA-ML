@@ -10,14 +10,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Generamos 1525 puntos aleatorios para el ejemplo
-N = 1525
+N = 5
 np.random.seed(42)
 
 x = np.random.uniform(-10, 10, N)
 y = np.random.uniform(-10, 10, N)
 
 # Parámetros de error
-error_relativo = 0.02
+error_relativo = 1
 max_desplazamiento = 0.2
 
 r_original = np.sqrt(x**2 + y**2)
