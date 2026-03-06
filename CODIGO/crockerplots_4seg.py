@@ -29,8 +29,9 @@ def descargar_matrices_por_id(ruta_carpeta):
         if archivo.endswith('.csv'):   # coger solo los csv
             partes = archivo.split('_') 
 
-            id_str = partes[3]
-
+            #id_str = partes[3] # para los datos mios
+            id_str = partes[2] #para los datos de cristina
+            
             if id_str not in id_dict:
                 id_dict[id_str] = []
 
@@ -48,8 +49,16 @@ def descargar_matrices_por_id(ruta_carpeta):
 #------------------------------------------------------------------------------
 #empujando = 0
 #sin empujar = 1
-ruta_0 = '/Users/sahy/Documents/Peatones/Clasificador_ModelosSupervisadosyNoSupervisados/RESULTADOS_RUIDO/empujando/betti_1'
-ruta_1 =  '/Users/sahy/Documents/Peatones/Clasificador_ModelosSupervisadosyNoSupervisados/RESULTADOS_RUIDO/sinempujar/betti_1'
+#ruta_0 = '/home/sahily/Documentos/Classification_TDA-ML/RESULTADOS/empujando/betti_0'
+#ruta_1 =  '/home/sahily/Documentos/Classification_TDA-ML/RESULTADOS/sinempujar/betti_0'
+
+
+
+
+ruta_0='/home/sahily/Documentos/Datos_enviados_por_cristina/b0_empujando_100'
+ruta_1 = '/home/sahily/Documentos/Datos_enviados_por_cristina/b0_sin_empujar_100'
+
+
 
 
 

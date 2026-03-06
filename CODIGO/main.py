@@ -43,13 +43,28 @@ data_dir = root_dir.parent / cfg.FOLDER_DATA_NAME #ruta donde se encuentan los d
 result_dir = root_dir.parent / cfg.FOLDER_RESULTADOS_NAME # ruta donde guarderemos todos los resultados obtenidos 
 
 #------------------------------------------------------------------------------
-#Esta funcion une todos los exprimentos pero ademas los guarda!
-todos_df = todos_los_experimentos(data_dir,result_dir)
+#------------------------------------------------------------------------------
+# DATAFRAME GLOBAL DE EXPERIMENTOS (CACHE) 
+#Aqui logramos que una vez creado el data frame de todos los experimentos, si ya esta creado y ejecutamos el codigo
+#no lo vuelva a crear 
 
-#Leemos los datos guardados
-ruta_salida = result_dir/ cfg.NAME_ALL_EXPERIMENTOS
-df_todos_experimentos = load(ruta_salida)
 
+ruta_salida = result_dir / cfg.NAME_ALL_EXPERIMENTOS
+
+if ruta_salida.exists():
+    print("Cargando dataframe de todos los experimentos...")
+    df_todos_experimentos = load(ruta_salida)
+
+else:
+    print("Generando dataframe de todos los experimentos (esto puede tardar)...")
+
+    df_todos_experimentos = todos_los_experimentos(data_dir, result_dir)
+
+    # guardar a CSV
+    ruta_csv = ruta_salida.with_suffix(".csv")
+    df_todos_experimentos.to_csv(ruta_csv, index=False)
+
+    print("Dataframe guardado en:", ruta_csv)
 #------------------------------------------------------------------------------
 #Recortamos los datos a un cuadrado 2x2
 data_archivos_total_delimitado = individuos_cuadrado_df(df_todos_experimentos)
@@ -62,7 +77,7 @@ for etiqueta, data_archivos in data_archivos_total_delimitado.groupby(cfg.LABEL_
     print(f"\nProcesando etiqueta: {etiqueta}")
 
     # Carpeta específica para guardar resultados esta etiqueta 
-    rutas_base = result_dir / etiqueta
+    rutas_base = result_dir / etiqueta / f'ruido_{cfg.ERROR_ADD_RUIDO}'
     os.makedirs(rutas_base, exist_ok=True)
 
     # IDs de evacuación para esta etiqueta  

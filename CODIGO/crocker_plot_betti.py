@@ -7,7 +7,6 @@ Created on Mon Jan 19 09:30:09 2026
 
 Para calcular los crocker plot y betti
 """
-
 # =============================================================================
 # LIBRERIAS
 # =============================================================================
@@ -284,7 +283,3 @@ def crear_matrices(griddata, dim):
         .fillna(0)
     )
     return matrix
-
-
-
-

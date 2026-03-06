@@ -4,8 +4,6 @@
 Created on Wed Jan 14 10:53:52 2026
 
 @author: sahy
-
-Creo que estamuy bien ee23 enero!
 """
 
 # =============================================================================
@@ -58,10 +56,15 @@ def todos_los_experimentos(data_dir,result_dir):
         for carpeta2 in sorted(carpeta.iterdir()):
             if not carpeta2.is_dir() or carpeta2.name.startswith("."):
                 continue
-    
-            experimento_id = carpeta2.name
-            print(f"Experimento: {experimento_id}")
-    
+            
+            
+            #Esto lo hacemos porque el nombre del experimento tiene delante la 
+            #fecha en la que fue realizado y queremos quitarla
+            name_experimento = carpeta2.name
+            split_name  = name_experimento.split('_')
+            experimento_id = split_name[1]
+        
+            
             dfs_experimento = [] # DataFrames de cada individuo del experimento
             
             
@@ -109,13 +112,6 @@ def todos_los_experimentos(data_dir,result_dir):
         ],
         ignore_index=True
     )
-    
-    #Guardando el df de todos los experimentos
-    nombre_archivo_df_total = cfg.NAME_ALL_EXPERIMENTOS 
-    path_resultados = result_dir/nombre_archivo_df_total
-    dump(datos_df_total,path_resultados)
-    print(f"Ruta del df de todos los experimentos guardados en : {path_resultados}")
-    
     return datos_df_total
 
 # =============================================================================

@@ -29,7 +29,7 @@ COLUMN_NAMES = [FRAME_COL,X_COL,Y_COL]
 #------------------------------------------------------------------------------
 #----------NOMBRE DE ARCHIVOS -------------------------------------------------
 #Nombre del archivo en el que guardamos el df de todos los experimentos
-NAME_ALL_EXPERIMENTOS = "todos_df_experimentos.rds" 
+NAME_ALL_EXPERIMENTOS = "todos_df_experimentos" 
 
 #------------------------------------------------------------------------------
 #--------------VARIABLES-------------------------------------------------------
@@ -62,10 +62,10 @@ L = 2.5 #Longitud de los intervalos temporales
 #curve_type : betti |entropy | euler
 CURVA_DE_PERSISTENCIA ='betti'
 
-DIMENSION = 1
+DIMENSION =1
 #------------------------------------------------------------------------------
 #---------------------------------------------------------------------
 
-ERROR_ADD_RUIDO =0.02
+ERROR_ADD_RUIDO =0
 
 

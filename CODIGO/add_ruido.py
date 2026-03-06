@@ -29,7 +29,7 @@ from procesado import *
 # FUNCIONES
 # =============================================================================
 
-def add_fixed_distance_noise(pos,error = None, seed=None):
+def add_fixed_distance_noise(pos,error_relativo = None, seed=None):
     """
     Añade desplazamiento aleatorio de magnitud fija a cada posición y dibuja el resultado.
     
@@ -41,49 +41,30 @@ def add_fixed_distance_noise(pos,error = None, seed=None):
     """
     if seed is not None:
         np.random.seed(seed)
-    if error is None:
-        error = cfg.ERROR_ADD_RUIDO
+    if error_relativo is None:
+        error_relativo = cfg.ERROR_ADD_RUIDO
  
-    N = pos.shape[0]
+    N = pos.shape[0] 
     
-    r_original = np.sqrt(pos['x']**2 + y**2)
-
     # Dirección aleatoria uniforme
     theta = np.random.uniform(0.0, 2*np.pi, size=N)
     
-    
-    # Generar r con distribución uniforme
-    r_max = 0.2 * (1 + error)
-    r = np.random.uniform(0, r_max, size=N)
-    
-    
+    #Distancia original entre el punto y el origen
+    x = pos[:,0]
+    y = pos[:,1]
 
-
+    r_original = np.sqrt(x**2 + y**2)
     
-
     # Desplazamiento máximo por punto
-    delta_r_max = np.minimum(error_relativo * r_original, max_desplazamiento)
-
-    # Generar desplazamientos aleatorios uniformes en el círculo
-    theta = np.random.uniform(0, 2*np.pi, N)
+    delta_r_max = np.minimum(error_relativo * r_original, 0.2)
+    # Generar r con distribución uniforme
     u = np.random.uniform(0, 1, N)
     r_error = delta_r_max * np.sqrt(u)
     
-
-
-
-
-
-
-
-
-
-
-
-    
+ 
     # Desplazamiento en coordenadas cartesianas
-    dx = r * np.cos(theta)
-    dy = r * np.sin(theta)
+    dx = r_error * np.cos(theta)
+    dy = r_error * np.sin(theta)
 
     pos_ruido = pos + np.column_stack((dx, dy))
     
@@ -107,12 +88,7 @@ def add_fixed_distance_noise(pos,error = None, seed=None):
     # plt.title(f"Desplazamiento fijo de {distance} unidades")
     # plt.show()
     
-    
-
     return pos_ruido
-
-
-
 
 # =============================================================================
 # RUTAS Y PARÁMETROS
